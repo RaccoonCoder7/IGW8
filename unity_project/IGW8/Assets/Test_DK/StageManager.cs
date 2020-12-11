@@ -72,6 +72,17 @@ public class StageManager : MonoBehaviour
         StartCoroutine(LoadNextMap_internal());
     }
 
+    public void ReloadMap()
+    {
+        if (!nowStage)
+        {
+            Debug.LogError("현재 스테이지에 대한 정보가 없습니다.");
+            return;
+        }
+
+        StartCoroutine(ReloadMap_internal());
+    }
+
     private IEnumerator LoadStage(Stage stage)
     {
         // TODO: 플레이어 조작 중지
@@ -98,6 +109,16 @@ public class StageManager : MonoBehaviour
         // TODO: 플레이어 조작 중지
         dim.SetActive(true);
         yield return nowStage.StartCoroutine(nowStage.LoadNextMap());
+        yield return new WaitForSeconds(0.5f);
+        dim.SetActive(false);
+        // TODO: 플레이어 조작 가능
+    }
+
+    private IEnumerator ReloadMap_internal()
+    {
+        // TODO: 플레이어 조작 중지
+        dim.SetActive(true);
+        yield return nowStage.StartCoroutine(nowStage.ReloadMap());
         yield return new WaitForSeconds(0.5f);
         dim.SetActive(false);
         // TODO: 플레이어 조작 가능

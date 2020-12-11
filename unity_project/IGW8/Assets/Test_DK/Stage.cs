@@ -38,6 +38,31 @@ public class Stage : MonoBehaviour
         yield return null;
     }
 
+    public IEnumerator ReloadMap()
+    {
+        if (!nowMap)
+        {
+            Debug.LogError("현재 맵이 없습니다.");
+            yield break;
+        }
+
+        int nextMapNum = nowMap.mapNum;
+        var nextMap = mapList.Where(x =>
+            x.mapNum == nextMapNum).FirstOrDefault();
+        if (!nextMap)
+        {
+            Debug.LogError("해당 맵이 없습니다: " + nextMapNum);
+            yield break;
+        }
+
+        DestroyImmediate(nowMap.gameObject);
+        nowMap = null;
+
+        nowMap = Instantiate(nextMap, Vector3.zero, Quaternion.identity);
+        SetPlayerStartPos(nowMap);
+        yield return null;
+    }
+
     private void SetPlayerStartPos(MapManager mm)
     {
         var player = GameObject.FindWithTag("Player");

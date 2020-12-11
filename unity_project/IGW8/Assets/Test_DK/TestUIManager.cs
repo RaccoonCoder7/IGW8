@@ -11,13 +11,16 @@ public class TestUIManager : MonoBehaviour
 
     public void OnClickNextStage()
     {
-        Debug.Log("NextStage");
         StageManager.Instance.LoadNextStage();
     }
 
     public void OnClickNextMap()
     {
-        Debug.Log("NextMap");
         StageManager.Instance.LoadNextMap();
+    }
+
+    public void OnClickReloadMap()
+    {
+        StageManager.Instance.ReloadMap();
     }
 }
