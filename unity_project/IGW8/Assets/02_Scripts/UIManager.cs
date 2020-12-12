@@ -9,7 +9,7 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance = null;
 
     public Image concentraionBar;
-    public Image leftGunChamber, rightGunChamber;
+    public Image[] magazineBullets=new Image[12];
     public GameObject[] deathMarks;
     private int markCnt;
     public Sprite[] chamberSprites;
@@ -42,8 +42,14 @@ public class UIManager : MonoBehaviour
 
     public void SetGunChambersUI(int num)
     {
-        leftGunChamber.sprite = chamberSprites[num / 2];
-        rightGunChamber.sprite = chamberSprites[num - num / 2];
+        for (int i = 0; i < 12 - num; i++)
+        {
+            magazineBullets[i].gameObject.SetActive(false);
+        }
+        for (int i = 12-num; i < 12 ; i++)
+        {
+            magazineBullets[i].gameObject.SetActive(true);
+        }
     }
 
     public void SetConcentrationUI(int num)

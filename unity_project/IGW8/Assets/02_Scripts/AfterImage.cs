@@ -41,7 +41,6 @@ public class AfterImage : MonoBehaviour
         for (int i = 0; i < objCnt; i++)
         {
             afterImages[i].SetActive(false);
-            //yield return new WaitForSeconds(.02f);
         }
     }
 }

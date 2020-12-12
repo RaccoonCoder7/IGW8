@@ -146,6 +146,13 @@ public class EnemyController : MonoBehaviour
         {
             Destroy(other.gameObject);
 
+            GFXManager.Instance.GenerateGFX(transform.position, other.transform.rotation, "Blood");
+            //DeathAnim
+
+            state = EnemyState.Dead;
+            
+            return;
+            
             if (state == EnemyState.Groggy)
             {
                 state = EnemyState.Dead;

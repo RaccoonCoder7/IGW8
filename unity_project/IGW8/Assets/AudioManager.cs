@@ -6,9 +6,17 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance = null;
 
-    private AudioSource audio;
+    private AudioSource asBGM;
+    private AudioSource asSFX;
+    public AudioClip BGM;
     public AudioClip deadEyeSFX;
-
+    public AudioClip gunshotSFX;
+    public AudioClip reloadSFX;
+    public AudioClip emptySFX;
+    public AudioClip counterSFX;
+    public AudioClip dashSFX;
+    public AudioClip deathSFX;
+    
     void Awake()
     {
         if (null == Instance)
@@ -26,7 +34,9 @@ public class AudioManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audio = GetComponent<AudioSource>();
+        asBGM = GetComponents<AudioSource>()[1];
+        asSFX = GetComponents<AudioSource>()[0];
+        PlayBGM();
     }
 
     // Update is called once per frame
@@ -35,8 +45,60 @@ public class AudioManager : MonoBehaviour
         
     }
 
+    public void StopPlayingBGM()
+    {
+        //asBGM.Stop();
+    }
+
+    public void StopPlayingDeadEye()
+    {
+        asBGM.volume = .5f;
+        asSFX.Stop();
+    }
+
+    public void PlayBGM()
+    {
+        asBGM.volume = .5f;
+        asBGM.clip = BGM;
+        asBGM.loop = true;
+        asBGM.Play();
+    }
+
     public void PlayDeadEye()
     {
-        audio.PlayOneShot(deadEyeSFX);
+        asBGM.volume = .1f;
+        asSFX.clip = deadEyeSFX;
+        asSFX.loop = true;
+        asSFX.Play();
+    }
+
+    public void PlayGunshot()
+    {
+        asSFX.PlayOneShot(gunshotSFX);
+    }
+
+    public void PlayReload()
+    {
+        asSFX.PlayOneShot(reloadSFX);
+    }
+
+    public void PlayEmpty()
+    {
+        asSFX.PlayOneShot(emptySFX);
+    }
+
+    public void PlayDash()
+    {
+        asSFX.PlayOneShot(dashSFX);
+    }
+
+    public void PlayCounter()
+    {
+        asSFX.PlayOneShot(counterSFX);
+    }
+    
+    public void PlayDeath()
+    {
+        asSFX.PlayOneShot(deathSFX);
     }
 }
