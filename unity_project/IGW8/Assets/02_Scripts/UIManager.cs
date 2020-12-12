@@ -40,7 +40,7 @@ public class UIManager : MonoBehaviour
         
     }
 
-    public void SetGunChambersUI(int num)
+    public void SetGunChambersUI(int num) //오른쪽 위 탄창 UI
     {
         for (int i = 0; i < 12 - num; i++)
         {
@@ -52,19 +52,19 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void SetConcentrationUI(int num)
+    public void SetConcentrationUI(int num) //데드아이 게이지 UI PlayerController의 concentration이 바뀌면 같이 수정
     {
         concentraionBar.fillAmount = (float) num / 2000;
     }
 
-    public void MarkedForDeath(Vector2 pos)
+    public void MarkedForDeath(Vector2 pos) //데드아이중 사격시 X표시
     {
         deathMarks[markCnt].SetActive(true);
         deathMarks[markCnt].GetComponent<RectTransform>().position = pos;
         markCnt++;
     }
 
-    public void RemoveMarks()
+    public void RemoveMarks() //X표시 제거
     {
         foreach (var obj in deathMarks)
         {

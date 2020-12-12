@@ -38,8 +38,7 @@ public class PlayerController : MonoBehaviour
     private int dashDir;
     private int bulletCount;
     private float bulletVelocity = 50f;
-    [SerializeField]
-    private int concentration=2000, constreak;
+    [SerializeField] private int concentration = 2000; //<<데드아이 수치 스테이지 클리어시 증가할 수 있음(UIManager쪽 Fillamound도 같이 수정해야함)
     private bool isInvulnerable = false;
     private bool isConcentrating = false;
     private List<KeyValuePair<GameObject, Vector2>> deadEyeBullets=new List<KeyValuePair<GameObject, Vector2>>();
@@ -63,14 +62,14 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && Input.GetAxisRaw("Horizontal") != 0 && dashDelay != 0 &&
             isDashing == false) Dash();
         
-        if (counterFrames > 0)
+        if (counterFrames > 0) //회피 성공시 (카운터 가능)
         {
             renderer.color=Color.black;
         }
 
-        if (isConcentrating)
+        if (isConcentrating) //데드아이 발동중
         {
-            conAdjustFrame1++;
+            conAdjustFrame1++; //데드아이 timescale(0.1배) 보정용
             conAdjustFrame2++;
             conAdjustFrame3++;
 
@@ -140,9 +139,9 @@ public class PlayerController : MonoBehaviour
         UIManager.Instance.SetConcentrationUI(concentration);
     }
     
-    private void Move()
+    private void Move() //이동
     {
-        if (state == State.Dead || isConcentrating) return;
+        if (state == State.Dead) return;
         if (Input.GetAxisRaw("Horizontal") < 0 && dashDir * Input.GetAxisRaw("Horizontal") >= 0)
         {
             renderer.flipX = true;
@@ -166,25 +165,25 @@ public class PlayerController : MonoBehaviour
         transform.Translate((isDashing ? dashDir : Input.GetAxisRaw("Horizontal"))* moveSpeed, 0, 0);
     }
 
-    private void Dash()
+    private void Dash() //대시(무적)
     {
-        if (state == State.Dead || isConcentrating) return;
+        if (state == State.Dead) return;
         {
             isDashing = true;
             dashDir = (int)Input.GetAxisRaw("Horizontal");
             StartInvulnerable();
-            ai.StartCoroutine("GenerateAfterImages", new KeyValuePair<Sprite, int>(renderer.sprite, dashDir));
+            ai.StartCoroutine("GenerateAfterImages", new KeyValuePair<Sprite, int>(renderer.sprite, dashDir)); //잔상
             AudioManager.Instance.PlayDash();
         }
     }
 
-    private void Reload()
+    private void Reload() //재장전
     {
         anim.SetTrigger("Reload");
         AudioManager.Instance.PlayReload();
     }
 
-    public void Fire()
+    public void Fire() //발사
     {
         if (state == State.Dead) return;
         {
@@ -194,49 +193,45 @@ public class PlayerController : MonoBehaviour
                 return; //Reload Notice
             }
 
-            if (isConcentrating)
+            if (isConcentrating) //데드아이 사용중(기존이랑 다름)
             {
                 Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                //Debug.Log(mousePos);
                 Vector3 charPos = Camera.main.ScreenToWorldPoint(Camera.main.WorldToScreenPoint(transform.position));
                 Vector2 trajVector = ((Vector2) mousePos - (Vector2) charPos).normalized;
                 float angle = Mathf.Atan2(trajVector.y, trajVector.x) * Mathf.Rad2Deg;
                 GameObject obj=bulletObjs[bulletIdx++%20];
                 obj.transform.position = transform.position;
                 obj.transform.rotation=Quaternion.Euler(new Vector3(0,0,angle));
-                //GameObject obj = Instantiate(bulletObj, transform.position, Quaternion.Euler(new Vector3(0, 0, angle)));
                 obj.GetComponent<SpriteRenderer>().enabled = false;
                 deadEyeBullets.Add(new KeyValuePair<GameObject, Vector2>(obj, trajVector));
                 UIManager.Instance.MarkedForDeath(Input.mousePosition);
                 bulletCount--;
                 UIManager.Instance.SetGunChambersUI(bulletCount);
             }
-            else
+            else //평상시
             {
-                if (counterFrames > 0)
+                if (counterFrames > 0) //카운터 성공시
                 {
                     Collider2D[] c2ds = Physics2D.OverlapCircleAll(transform.position, .3f,11);
                     foreach (var col in c2ds)
                     {
                         if (col.tag == "EnemyBullet")
                         {
-                            Destroy(col.gameObject);
+                            Destroy(col.gameObject); //반경 0.3f내의 적 총알 파괴
                         }
                     }
 
-                    counterFrames = 0;
+                    counterFrames = 0; //카운터 종료
                     AudioManager.Instance.PlayCounter();
-                    Invoke("Fire",.1f);
+                    Invoke("Fire",.1f); //한번 더 발사
                 }
                 Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                //Debug.Log(mousePos);
                 Vector3 charPos = Camera.main.ScreenToWorldPoint(Camera.main.WorldToScreenPoint(transform.position));
                 Vector2 trajVector = ((Vector2) mousePos - (Vector2) charPos).normalized;
                 float angle = Mathf.Atan2(trajVector.y, trajVector.x) * Mathf.Rad2Deg;
                 GameObject obj=bulletObjs[bulletIdx++%20];
                 obj.transform.position = transform.position;
                 obj.transform.rotation=Quaternion.Euler(new Vector3(0,0,angle));
-                //GameObject obj = Instantiate(bulletObj, transform.position, Quaternion.Euler(new Vector3(0, 0, angle)));
                 Rigidbody2D rb = obj.GetComponent<Rigidbody2D>();
                 rb.AddForce(trajVector * 70f, ForceMode2D.Impulse);
                 bulletCount--;
@@ -246,14 +241,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void Die()
+    public void Die() //사망
     {
         AudioManager.Instance.PlayDeath();
         anim.SetTrigger("Die");
         state = State.Dead;
     }
 
-    IEnumerator Blackout()
+    IEnumerator Blackout() //데드아이시 화면 페이드아웃
     {
         for (float f = 0; f < .8; f += .0008f)
         {
@@ -262,7 +257,7 @@ public class PlayerController : MonoBehaviour
         }
     }
     
-    IEnumerator UnleashBullets()
+    IEnumerator UnleashBullets() //데드아이시 한번에 총알 발사
     {
         UIManager.Instance.RemoveMarks();
         foreach (var data in deadEyeBullets)
@@ -276,13 +271,13 @@ public class PlayerController : MonoBehaviour
         deadEyeBullets.Clear();
     }
 
-    public void ReloadBullet()
+    public void ReloadBullet() //재장전
     {
         bulletCount = 12;
         UIManager.Instance.SetGunChambersUI(12);
     }
     
-    public void StartInvulnerable()
+    public void StartInvulnerable()//무적(대시) 시작
     {
         dashFrames = 20;
         renderer.color=new Color(1,1,1,.5f);
@@ -290,7 +285,7 @@ public class PlayerController : MonoBehaviour
         isInvulnerable = true;
     }
 
-    public void EndInvulnerable()
+    public void EndInvulnerable()//무적(대시) 종료
     {
         dashDelay = 20;
         isDashing = false;
@@ -300,12 +295,11 @@ public class PlayerController : MonoBehaviour
         isInvulnerable = false;
     }
 
-    void DeadEye()
+    void DeadEye()//데드아이
     {
         if (!isConcentrating && concentration > 300)
         {
             SlowTimeScale();
-            //Invoke("ResetTimeScale",.75f);
         }
         else
         {
@@ -313,7 +307,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void SlowTimeScale()
+    public void SlowTimeScale()//시간 느리게
     {
         isConcentrating = true;
         Time.timeScale = .1f;
@@ -323,7 +317,7 @@ public class PlayerController : MonoBehaviour
         AudioManager.Instance.PlayDeadEye();
     }
 
-    public void ResetTimeScale()
+    public void ResetTimeScale()//시간 정상화
     {
         isConcentrating = false;
         Time.timeScale = 1f;
@@ -336,7 +330,7 @@ public class PlayerController : MonoBehaviour
     }
     
     
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)//적총알 충돌
     {
         if (other.tag.Equals("EnemyBullet"))
         {

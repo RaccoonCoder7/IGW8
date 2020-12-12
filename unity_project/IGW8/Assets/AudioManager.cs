@@ -34,8 +34,8 @@ public class AudioManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        asBGM = GetComponents<AudioSource>()[1];
-        asSFX = GetComponents<AudioSource>()[0];
+        asBGM = GetComponents<AudioSource>()[1];//BGM용
+        asSFX = GetComponents<AudioSource>()[0];//데드아이 및 기타 사운드이펙트용 (필요하면 더 추가)
         PlayBGM();
     }
 
@@ -47,7 +47,7 @@ public class AudioManager : MonoBehaviour
 
     public void StopPlayingBGM()
     {
-        //asBGM.Stop();
+        
     }
 
     public void StopPlayingDeadEye()
@@ -56,7 +56,7 @@ public class AudioManager : MonoBehaviour
         asSFX.Stop();
     }
 
-    public void PlayBGM()
+    public void PlayBGM()//스테이지마다 다른음악 나올 수 있음
     {
         asBGM.volume = .5f;
         asBGM.clip = BGM;
