@@ -9,6 +9,12 @@ public class TestUIManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    public void OnClickNextSelect()
+    {
+        var actionArr = SelectUIManager.Instance.GetTestActionArr();
+        SelectUIManager.Instance.StartSelect(actionArr);
+    }
+
     public void OnClickNextStage()
     {
         StageManager.Instance.LoadNextStage();
