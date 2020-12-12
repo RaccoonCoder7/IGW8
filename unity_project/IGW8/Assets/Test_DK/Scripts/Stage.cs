@@ -7,6 +7,7 @@ public class Stage : MonoBehaviour
 {
     public int stageNum;
     public string stageName;
+    public string stageTextName;
     public List<MapManager> mapList = new List<MapManager>();
 
     private MapManager nowMap;

@@ -80,6 +80,7 @@ public class StageManager : MonoBehaviour
             return;
         }
 
+        CSVReader.lineIndex = CSVReader.savedIndex;
         StartCoroutine(ReloadMap_internal());
     }
 
@@ -99,6 +100,7 @@ public class StageManager : MonoBehaviour
             DestroyImmediate(nowStage.gameObject);
         }
         nowStage = Instantiate(stage);
+        CSVReader.ReadCSV(nowStage.stageTextName);
         yield return StartCoroutine(LoadNextMap_internal());
         dim.SetActive(false);
         // TODO: 플레이어 조작 가능
@@ -108,6 +110,7 @@ public class StageManager : MonoBehaviour
     {
         // TODO: 플레이어 조작 중지
         dim.SetActive(true);
+        CSVReader.savedIndex = CSVReader.lineIndex;
         yield return nowStage.StartCoroutine(nowStage.LoadNextMap());
         yield return new WaitForSeconds(0.5f);
         dim.SetActive(false);

@@ -45,6 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageNum: 1
   stageName: Scene_Stage_01
+  stageTextName: StageText_01
   mapList:
   - {fileID: 3084983809961857741, guid: febfb0bf555008a46b87b610736fd82c, type: 3}
   - {fileID: 3084983809961857741, guid: d9f401cb77a4e9a41a0e56a661878352, type: 3}
