@@ -14,6 +14,7 @@ public class StageManager : MonoBehaviour
     private List<Stage> stageList = new List<Stage>();
     [SerializeField]
     private GameObject dim;
+    public List<GameObject> ddoll = new List<GameObject>();
 
     public static StageManager Instance = null;
 
@@ -28,6 +29,14 @@ public class StageManager : MonoBehaviour
             // 테스트용 코드
             var player = GameObject.FindWithTag("Player");
             DontDestroyOnLoad(player);
+
+            var mainCam = Camera.main;
+            DontDestroyOnLoad(mainCam.gameObject);
+
+            foreach (var obj in ddoll)
+            {
+                DontDestroyOnLoad(obj);
+            }
         }
         else
         {
